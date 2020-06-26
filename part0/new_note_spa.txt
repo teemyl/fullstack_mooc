@@ -1,0 +1,19 @@
+note over browser:
+User inputs data and clicks "Save"
+end note
+
+note over browser:
+Javascript captures the click event
+-> gets user input, adds timestamp and creates a new note object
+-> updates the browser's notes array with the new object
+-> sends new object to server as JSON
+end note
+
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+
+note over server:
+Create new note object from JSON data
+-> update notes array with the new object
+end note
+
+server-->browser: 201
