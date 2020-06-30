@@ -37,6 +37,19 @@ const App = () => {
     }
   }
 
+  const handleDelete = (id) => {
+    const deleteObject = persons.find(p => p.id === id)
+    const result = window.confirm(`Delete ${ deleteObject.name }`)
+    if (result)
+      personService
+        .remove(deleteObject.id)
+        .then(() => {
+          personService
+            .getAll()
+            .then(persons => setPersons(persons))
+        })
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -55,7 +68,11 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <PersonList persons={ persons } filter={ filter } />
+      <PersonList
+        persons={ persons }
+        filter={ filter }
+        handleDelete = { handleDelete }
+      />
 
     </div>
   )

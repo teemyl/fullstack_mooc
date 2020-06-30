@@ -26,16 +26,20 @@ export const PersonForm = (props) => {
   )
 }
 
-export const PersonList = ({ persons, filter }) => {
+export const PersonList = ({ persons, filter, handleDelete }) => {
   return (
     <div>
       {
         persons
         .filter(person => person.name.toUpperCase().indexOf(filter.toUpperCase()) > -1)
-        .map(person => <Person key={ person.name } person={ person } />)
+        .map(person => <Person key={ person.id } person={ person } handleDelete={ () => handleDelete(person.id) } />)
       }
     </div>
   )
 }
 
-const Person = ({ person }) => <div>{ person.name } { person.number }</div>
+const Person = ({ person, handleDelete }) => (
+  <div>
+    { person.name } { person.number } <button onClick={ handleDelete } value={ person.id }>delete</button>
+  </div>
+)
