@@ -25,7 +25,7 @@ const App = () => {
     const newPerson = { name: newName, number: newNumber }
 
     if (persons.findIndex(p => p.name === newName) > -1) {
-      const result = window.confirm(`${ newName } is already added to phonebook, replace the old number with an new one?`)
+      const result = window.confirm(`${ newName } is already added to phonebook, replace the old number with a new one?`)
       if (result) {
         const existingPerson = persons.find(p => p.name === newName)
         personService
@@ -53,9 +53,7 @@ const App = () => {
       personService
         .remove(deleteObject.id)
         .then(() => {
-          personService
-            .getAll()
-            .then(persons => setPersons(persons))
+          setPersons(persons.filter(p => p.id !== id))
         })
   }
 
