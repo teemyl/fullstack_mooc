@@ -49,6 +49,9 @@ const App = () => {
             setPersons(persons.map(p => p.id !== existingPerson.id ? p : updatedPerson))
             displaySuccess(`Updated ${ updatedPerson.name }`)
           })
+          .catch(error => {
+            displayError(error.response.data.error)
+          })
       }
     }
     else {
@@ -59,6 +62,9 @@ const App = () => {
           setNewNumber('')
           setNewName('')
           displaySuccess(`Created ${ createdPerson.name }`)
+        })
+        .catch(error => {
+          displayError(error.response.data.error)
         })
     }
   }
