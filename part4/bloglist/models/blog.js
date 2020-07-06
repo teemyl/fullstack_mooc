@@ -1,6 +1,4 @@
-const config = require('./../utils/config')
 const mongoose = require('mongoose')
-const logger = require('./../utils/logger')
 
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
