@@ -104,3 +104,19 @@ describe('most blogs', () => {
     expect(listHelper.mostBlogs(blogs)).toEqual(result)
   })
 })
+
+describe('most likes', () => {
+  test('of empty list is null', () => {
+    expect(listHelper.mostLikes([])).toBeNull()
+  })
+
+  test('of list with one entry to return the corresponding author and like count', () => {
+    const listWithOneBlog = [blogs[0]]
+    expect(listHelper.mostLikes(listWithOneBlog)).toEqual({author: 'Michael Chan', likes: 7})
+  })
+
+  test('of list with multiple entries to be author with most combined likes', () => {
+    const result = { author: 'Edsger W. Dijkstra', likes: 17 }
+    expect(listHelper.mostLikes(blogs)).toEqual(result)
+  })
+})
