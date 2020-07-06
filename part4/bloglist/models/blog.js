@@ -1,14 +1,13 @@
+const config = require('./../utils/config')
 const mongoose = require('mongoose')
 const logger = require('./../utils/logger')
 
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
 
-const url = process.env.MONGODB_URI
+logger.info('connecting to', config.MONGODB_URI)
 
-logger.info('connecting to', url)
-
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     logger.info('connected to MongoDB successfully')
   })
