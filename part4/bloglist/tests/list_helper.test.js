@@ -61,12 +61,30 @@ describe('total likes', () => {
   test('of empty list is zero', () => {
     expect(listHelper.totalLikes([])).toBe(0)
   })
+
   test('when list has only one blog, equals the likes of that', () => {
     const listWithOneBlog = [blogs[0]]
     const result = listHelper.totalLikes(listWithOneBlog)
     expect(result).toBe(7)
   })
+
   test('of list with multiple entries is calculated right', () => {
     expect(listHelper.totalLikes(blogs)).toBe(36)
+  })
+})
+
+describe('favorite blog', () => {
+  test('of empty list is null', () => {
+    expect(listHelper.favoriteBlog([])).toBeNull()
+  })
+
+  test('of list with one entry to return that entry', () => {
+    const listWithOneBlog = [blogs[0]]
+    const result = listHelper.favoriteBlog(listWithOneBlog)
+    expect(result).toEqual(blogs[0])
+  })
+
+  test('of list with multiple entries to return the one with most likes', () => {
+    expect(listHelper.favoriteBlog(blogs)).toEqual(blogs[2])
   })
 })
