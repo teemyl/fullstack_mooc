@@ -127,6 +127,30 @@ describe('deletion of a blog', () => {
   })
 })
 
+describe('updating of a blog', () => {
+  test('succeeds with status code 200 if id is valid and returns the updated blog', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+    
+    const updatedBlog = {...blogToUpdate, likes: blogToUpdate.likes + 1}
+
+    const res = await api
+      .put(`/api/blogs/${ blogToUpdate.id }`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(res.body.likes).toBe(blogToUpdate.likes + 1)
+  })
+
+  test('fails with status code 404 if id is invalid', async () => {
+    const nonExistingId = await helper.nonExistingId()
+    await api
+      .put(`/api/blogs/${ nonExistingId }`)
+      .expect(404)
+  })
+})
+
 
 afterAll(() => {
   mongoose.connection.close()
