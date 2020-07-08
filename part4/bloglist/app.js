@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 // Router imports
 const blogsRouter = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
+const loginRouter = require('./controllers/login')
 
 // Utils imports
 const middleware = require('./utils/middleware')
@@ -32,6 +33,7 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 
 // Apply routes
+app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 
