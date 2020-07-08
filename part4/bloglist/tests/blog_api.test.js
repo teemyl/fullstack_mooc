@@ -37,7 +37,8 @@ test('a valid blog can be added', async () => {
   newBlog = {
     title: 'adding a new entry',
     author: 'jest test suite',
-    url: 'localhost'
+    url: 'localhost',
+    likes: 1
   }
 
   await api
@@ -51,6 +52,22 @@ test('a valid blog can be added', async () => {
 
   const titles = (blogsAtEnd).map(b => b.title)
   expect(titles).toContain('adding a new entry')
+})
+
+test('adding a blog without likes default likes to zero', async () => {
+  newBlog = {
+    title: 'adding a new entry',
+    author: 'jest test suite',
+    url: 'localhost'
+  }
+
+  const res = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  expect(res.body.likes).toBe(0)
 })
 
 afterAll(() => {
