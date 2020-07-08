@@ -1,19 +1,34 @@
 const app = require('../app')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const bcrypt = require('bcrypt')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 
 const api = supertest(app)
   
 beforeEach(async () => {
+  await User.deleteMany({})
+
+  const passwordHash = await bcrypt.hash('password', 10)
+
+  const user = new User({
+    username: 'testuser',
+    name: 'sysadmin',
+    passwordHash
+  })
+
+  await user.save()
+
   await Blog.deleteMany({})
 
-  const blogObjs = helper.initialBlogs.map(b => new Blog(b))
+  const blogObjs = helper.initialBlogs.map(b => new Blog({ ...b, user: user.id }))
   const promiseArr = blogObjs.map(b => b.save())
   
   await Promise.all(promiseArr)
 })
+
 describe('when there\'s initially some blogs saved', () => {
   test('blogs are returned as json', async () => {
     await api
@@ -34,7 +49,15 @@ describe('when there\'s initially some blogs saved', () => {
 })
 
 describe('adding of a new blog', () => {
+
   test('succeeds with valid data', async () => {
+    const loginResponse = await api
+      .post('/api/login')
+      .send({ username: 'testuser', password: 'password' })
+      .expect(200)
+
+    const token = loginResponse.body.token
+
     newBlog = {
       title: 'adding a new entry',
       author: 'jest test suite',
@@ -44,6 +67,7 @@ describe('adding of a new blog', () => {
   
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${ token }`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -56,6 +80,13 @@ describe('adding of a new blog', () => {
   })
 
   test('without likes defaults likes to zero', async () => {
+    const loginResponse = await api
+      .post('/api/login')
+      .send({ username: 'testuser', password: 'password' })
+      .expect(200)
+
+    const token = loginResponse.body.token
+
     newBlog = {
       title: 'adding a new entry',
       author: 'jest test suite',
@@ -64,6 +95,7 @@ describe('adding of a new blog', () => {
   
     const res = await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${ token }`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -72,18 +104,33 @@ describe('adding of a new blog', () => {
   })
   
   test('without title fails with status code 400', async () => {
-    newBlog = {
+    const loginResponse = await api
+      .post('/api/login')
+      .send({ username: 'testuser', password: 'password' })
+      .expect(200)
+
+    const token = loginResponse.body.token
+
+    const newBlog = {
       author: 'jest test suite',
       url: 'localhost'
     }
   
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${ token }`)
       .send(newBlog)
       .expect(400)
   })
   
   test('without url fails with status code 400', async () => {
+    const loginResponse = await api
+      .post('/api/login')
+      .send({ username: 'testuser', password: 'password' })
+      .expect(200)
+
+    const token = loginResponse.body.token
+
     newBlog = {
       title: 'adding a new entry',
       author: 'jest test suite'
@@ -91,18 +138,41 @@ describe('adding of a new blog', () => {
   
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${ token }`)
       .send(newBlog)
       .expect(400)
+  })
+
+  test('fails with status code 401 if token is invalid or missing', async () => {
+    const newBlog = {
+      title: 'adding a new entry',
+      author: 'jest test suite',
+      url: 'localhost',
+      likes: 1
+    }
+
+    await api
+      .post(`/api/blogs`)
+      .send(newBlog)
+      .expect(401)
   })
 })
 
 describe('deletion of a blog', () => {
   test('succeeds with status code 204 if id is valid', async () => {
+    const loginResponse = await api
+      .post('/api/login')
+      .send({ username: 'testuser', password: 'password' })
+      .expect(200)
+
+    const token = loginResponse.body.token
+
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
     await api
       .delete(`/api/blogs/${ blogToDelete.id }`)
+      .set('Authorization', `Bearer ${ token }`)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
@@ -118,11 +188,28 @@ describe('deletion of a blog', () => {
   })
   
   test('fails with status code 404 if id is invalid', async () => {
+    const loginResponse = await api
+      .post('/api/login')
+      .send({ username: 'testuser', password: 'password' })
+      .expect(200)
+
+    const token = loginResponse.body.token
+
     const nonExistingId = await helper.nonExistingId()
 
     await api
       .delete(`/api/blogs/${ nonExistingId }`)
+      .set('Authorization', `Bearer ${ token }`)
       .expect(404)
+  })
+
+  test('fails with status code 401 if token is invalid or missing', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${ blogToDelete.id }`)
+      .expect(401)
   })
 })
 
