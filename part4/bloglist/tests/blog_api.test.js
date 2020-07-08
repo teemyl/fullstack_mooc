@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const Blog = require('../models/blog')
 const helper = require('./test_helper')
-const blog = require('../models/blog')
 
 const api = supertest(app)
   
