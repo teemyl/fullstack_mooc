@@ -4,9 +4,15 @@ mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
 
 const blogSchema = mongoose.Schema({
-  title: String,
+  title: {
+    type: String,
+    required: [true, 'Blog without a title? No.']
+  },
   author: String,
-  url: String,
+  url: {
+    type: String,
+    required: [true, 'Nice blog, would be nicer if we knew where to find it.']
+  },
   likes: {
     type: Number,
     default: 0

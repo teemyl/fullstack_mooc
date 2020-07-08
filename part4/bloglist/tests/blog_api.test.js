@@ -44,7 +44,7 @@ test('a valid blog can be added', async () => {
   await api
     .post('/api/blogs')
     .send(newBlog)
-    .expect(201)
+    .expect(200)
     .expect('Content-Type', /application\/json/)
   
   const blogsAtEnd = await helper.blogsInDb()
@@ -64,10 +64,34 @@ test('adding a blog without likes default likes to zero', async () => {
   const res = await api
     .post('/api/blogs')
     .send(newBlog)
-    .expect(201)
+    .expect(200)
     .expect('Content-Type', /application\/json/)
 
   expect(res.body.likes).toBe(0)
+})
+
+test('adding a blog without title fails', async () => {
+  newBlog = {
+    author: 'jest test suite',
+    url: 'localhost'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+test('adding a blog without url fails', async () => {
+  newBlog = {
+    title: 'adding a new entry',
+    author: 'jest test suite'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
 })
 
 afterAll(() => {
