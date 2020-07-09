@@ -86,12 +86,12 @@ const App = () => {
     }
   }
 
-  const updateBlog = async (blogObject) => {
+  const updateBlog = async (blog) => {
     try {
       // Format the user field to only include the id
       const updatedBlog = await blogService.update({
-        ...blogObject,
-        user: blogObject.user.id
+        ...blog,
+        user: blog.user.id
       })
       
       setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
@@ -103,6 +103,29 @@ const App = () => {
     }
     catch (exception) {
       setErrorMessage(`Couldn't update blog: ${ exception.message }`)
+      setTimeout(() => {
+        setErrorMessage('')
+      }, 3000)
+    }
+  }
+
+  const removeBlog = async (blog) => {
+    try {
+      const result = window.confirm(`Remove ${ blog.title } ny ${ blog.author }?`)
+      if (result) {
+        await blogService.remove(blog)
+
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+
+        setSuccessMessage(`Blog removed successfully`)
+        setTimeout(() => {
+          setSuccessMessage('')
+        }, 3000)
+      }
+      
+    }
+    catch (exception) {
+      setErrorMessage(`Couldn't remove blog: ${ exception.message }`)
       setTimeout(() => {
         setErrorMessage('')
       }, 3000)
@@ -153,7 +176,14 @@ const App = () => {
       {
         blogs
           .sort((a, b) => b.likes - a.likes)
-          .map(blog => <Blog key={ blog.id } blog={ blog } updateBlog={ updateBlog } />)
+          .map(blog => 
+            <Blog
+              key={ blog.id }
+              user={ user }
+              blog={ blog }
+              updateBlog={ updateBlog }
+              removeBlog={ removeBlog } />
+          )
       }
     </div>
   )

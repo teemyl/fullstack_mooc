@@ -1,6 +1,6 @@
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ user, blog, updateBlog, removeBlog }) => {
 
   const [viewDetails, setViewDetails] = useState(false)
 
@@ -11,11 +11,19 @@ const Blog = ({ blog, updateBlog }) => {
     })
   }
 
+  const handleRemove = () => {
+    removeBlog(blog)
+  }
+
   const renderDetails = () => (
     <>
     { blog.url }<br />
     likes { blog.likes} <button onClick={ handleLike }>like</button><br />
-    { blog.author }
+    { blog.author }<br />
+    {
+      user.username === blog.user.username
+      && <button onClick={ handleRemove }>remove</button>
+    }
     </>
   )
 
