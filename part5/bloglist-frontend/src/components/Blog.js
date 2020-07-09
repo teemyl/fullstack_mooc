@@ -1,13 +1,20 @@
 import React, { useState} from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog }) => {
 
   const [viewDetails, setViewDetails] = useState(false)
+
+  const handleLike = () => {
+    updateBlog({
+      ...blog,
+      likes: blog.likes + 1
+    })
+  }
 
   const renderDetails = () => (
     <>
     { blog.url }<br />
-    likes { blog.likes} <button>like</button><br />
+    likes { blog.likes} <button onClick={ handleLike }>like</button><br />
     { blog.author }
     </>
   )

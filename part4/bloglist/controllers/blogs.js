@@ -5,6 +5,7 @@ const User = require('../models/user')
 
 const decodeToken = request => jwt.verify(request.token, process.env.SECRET)
 const invalidTokenError = response => response.status(401).json({ error: 'token missing or invalid' })
+
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
     .find({})
@@ -61,7 +62,7 @@ blogsRouter.put('/:id', async (request, response) => {
       blogToUpdate.id,
       request.body,
       { new: true }
-    )
+    ).populate('user', { username: 1, name: 1 })
     response.status(200).json(updatedBlog)
   }
   else {

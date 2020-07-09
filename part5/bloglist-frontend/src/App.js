@@ -67,7 +67,7 @@ const App = () => {
       }, 3000)
     }
   }
-
+  
   const addBlog = async (blogObject) => {
     try {
       blogFormRef.current.toggleVisibility()
@@ -80,6 +80,29 @@ const App = () => {
     }
     catch (exception) {
       setErrorMessage(`Couldn't create new blog: ${ exception.message }`)
+      setTimeout(() => {
+        setErrorMessage('')
+      }, 3000)
+    }
+  }
+
+  const updateBlog = async (blogObject) => {
+    try {
+      // Format the user field to only include the id
+      const updatedBlog = await blogService.update({
+        ...blogObject,
+        user: blogObject.user.id
+      })
+      
+      setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
+
+      setSuccessMessage(`Updated ${ updatedBlog.title } by ${ updatedBlog.author }`)
+      setTimeout(() => {
+        setSuccessMessage('')
+      }, 3000)
+    }
+    catch (exception) {
+      setErrorMessage(`Couldn't update blog: ${ exception.message }`)
       setTimeout(() => {
         setErrorMessage('')
       }, 3000)
@@ -127,7 +150,7 @@ const App = () => {
       <Toggleable buttonLabel='add blog' ref={ blogFormRef }>
         <BlogForm createBlog={ addBlog } />
       </Toggleable>
-      { blogs.map(blog => <Blog key={ blog.id } blog={ blog } />) }
+      { blogs.map(blog => <Blog key={ blog.id } blog={ blog } updateBlog={ updateBlog } />) }
     </div>
   )
 

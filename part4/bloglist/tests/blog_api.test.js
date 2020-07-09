@@ -218,6 +218,8 @@ describe('updating of a blog', () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToUpdate = blogsAtStart[0]
     
+    console.log(blogToUpdate)
+    
     const updatedBlog = {...blogToUpdate, likes: blogToUpdate.likes + 1}
 
     const res = await api

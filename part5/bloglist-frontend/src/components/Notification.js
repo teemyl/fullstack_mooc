@@ -10,6 +10,9 @@ const Notification = ({ message, type }) => {
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+    position: 'fixed',
+    top: 0,
+    width: '100%'
   }
 
   const successStyle = {
@@ -20,6 +23,9 @@ const Notification = ({ message, type }) => {
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+    position: 'fixed',
+    top: 0,
+    right: 0
   }
 
   if (!message) {
