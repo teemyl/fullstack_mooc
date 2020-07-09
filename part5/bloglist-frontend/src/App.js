@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react'
+
+// Import components
 import Blog from './components/Blog'
+import Notification from './components/Notification'
+
+// Import services
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -16,6 +21,10 @@ const App = () => {
   const [blogUrl, setBlogUrl] = useState('')
 
   const [blogs, setBlogs] = useState([])
+
+  // Other
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
     const getAll = async () => {
@@ -50,9 +59,16 @@ const App = () => {
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
+      setSuccessMessage(`Logged in successfully as ${ user.name }`)
+      setTimeout(() => {
+        setSuccessMessage('')
+      }, 3000)
     }
     catch (exception) {
-      
+      setErrorMessage('Invalid username or password')
+      setTimeout(() => {
+        setErrorMessage('')
+      }, 3000)
     }
   }
 
@@ -64,11 +80,18 @@ const App = () => {
         author: blogAuthor,
         url: blogUrl
       })
-      console.log(newBlog)
+
       setBlogs(blogs.concat(newBlog))
+      setSuccessMessage(`A new blog ${ newBlog.title } by ${ newBlog.author } added`)
+      setTimeout(() => {
+        setSuccessMessage('')
+      }, 3000)
     }
     catch (exception) {
-
+      setErrorMessage(`Couldn't create new blog: ${ exception.message }`)
+      setTimeout(() => {
+        setErrorMessage('')
+      }, 3000)
     }
     finally {
       setBlogTitle('')
@@ -137,9 +160,10 @@ const App = () => {
 
   const showBlogs = () => (
     <div>
-      <h2>blogs</h2>
-      <div>{ user.name } logged in</div>
-      <button onClick={ handleLogout }>logout</button>
+      <div>
+        { user.name } logged in
+        <button onClick={ handleLogout }>logout</button>
+      </div>
       <h2>create new</h2>
       { blogForm() }
       { blogs.map(blog => <Blog key={ blog.id } blog={ blog } />) }
@@ -148,6 +172,9 @@ const App = () => {
 
   return (
     <div>
+      <h2>{ user === null ? 'log in' : 'blogs' }</h2>
+      <Notification message={ errorMessage } type={ 'error' } />
+      <Notification message={ successMessage } type={ 'success' } />
       { user === null ? loginForm() : showBlogs() }
     </div>
   )
