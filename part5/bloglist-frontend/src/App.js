@@ -1,30 +1,26 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 // Import components
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
+import Toggleable from './components/Toggleable'
 
 // Import services
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
-  // Login states
+  // States
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
   const [user, setUser] = useState(null)
-
-  // Blog states
-  const [blogTitle, setBlogTitle] = useState('')
-  const [blogAuthor, setBlogAuthor] = useState('')
-  const [blogUrl, setBlogUrl] = useState('')
-
   const [blogs, setBlogs] = useState([])
-
-  // Other
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+
+  // References
+  const blogFormRef = useRef()
 
   useEffect(() => {
     const getAll = async () => {
@@ -72,15 +68,10 @@ const App = () => {
     }
   }
 
-  const addBlog = async (event) => {
-    event.preventDefault()
+  const addBlog = async (blogObject) => {
     try {
-      const newBlog = await blogService.create({
-        title: blogTitle,
-        author: blogAuthor,
-        url: blogUrl
-      })
-
+      blogFormRef.current.toggleVisibility()
+      const newBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(newBlog))
       setSuccessMessage(`A new blog ${ newBlog.title } by ${ newBlog.author } added`)
       setTimeout(() => {
@@ -92,11 +83,6 @@ const App = () => {
       setTimeout(() => {
         setErrorMessage('')
       }, 3000)
-    }
-    finally {
-      setBlogTitle('')
-      setBlogAuthor('')
-      setBlogUrl('')
     }
   }
 
@@ -129,34 +115,7 @@ const App = () => {
     </form>
   )
 
-  const blogForm = () => (
-    <div>
-      <form onSubmit={ addBlog }>
-        title:
-        <input
-          type='text'
-          value={ blogTitle }
-          name='title'
-          onChange={ ({ target }) => setBlogTitle(target.value) }
-        /><br />
-        author:
-        <input
-          type='text'
-          value={ blogAuthor }
-          name='author'
-          onChange={ ({ target }) => setBlogAuthor(target.value) }
-        /><br />
-        url:
-        <input
-          type='text'
-          value={ blogUrl }
-          name='url'
-          onChange={ ({ target }) => setBlogUrl(target.value) }
-        /><br />
-        <button type='submit'>create</button>
-      </form>
-    </div>
-  )
+  
 
   const showBlogs = () => (
     <div>
@@ -165,7 +124,9 @@ const App = () => {
         <button onClick={ handleLogout }>logout</button>
       </div>
       <h2>create new</h2>
-      { blogForm() }
+      <Toggleable buttonLabel='add blog' ref={ blogFormRef }>
+        <BlogForm createBlog={ addBlog } />
+      </Toggleable>
       { blogs.map(blog => <Blog key={ blog.id } blog={ blog } />) }
     </div>
   )
