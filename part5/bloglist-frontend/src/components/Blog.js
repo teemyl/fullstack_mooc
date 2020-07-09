@@ -18,13 +18,13 @@ const Blog = ({ user, blog, updateBlog, removeBlog }) => {
 
   const renderDetails = () => (
     <>
-    { blog.url }<br />
-    likes { blog.likes} <button onClick={ handleLike }>like</button><br />
-    { blog.author }<br />
-    {
-      user.username === blog.user.username
-      && <button onClick={ handleRemove }>remove</button>
-    }
+      { blog.url }<br />
+      likes { blog.likes} <button onClick={ handleLike }>like</button><br />
+      { blog.author }<br />
+      {
+        user.username === blog.user.username
+        && <button onClick={ handleRemove }>remove</button>
+      }
     </>
   )
 

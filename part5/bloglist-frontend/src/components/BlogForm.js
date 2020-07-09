@@ -13,12 +13,12 @@ const BlogForm = ({ createBlog }) => {
       author: blogAuthor,
       url: blogUrl
     })
-    
+
     setBlogTitle('')
     setBlogAuthor('')
     setBlogUrl('')
   }
-  
+
   return (
     <div>
       <form onSubmit={ addBlog }>

@@ -41,7 +41,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password
@@ -67,7 +67,7 @@ const App = () => {
       }, 3000)
     }
   }
-  
+
   const addBlog = async (blogObject) => {
     try {
       blogFormRef.current.toggleVisibility()
@@ -93,7 +93,7 @@ const App = () => {
         ...blog,
         user: blog.user.id
       })
-      
+
       setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
 
       setSuccessMessage(`Updated ${ updatedBlog.title } by ${ updatedBlog.author }`)
@@ -117,12 +117,12 @@ const App = () => {
 
         setBlogs(blogs.filter(b => b.id !== blog.id))
 
-        setSuccessMessage(`Blog removed successfully`)
+        setSuccessMessage('Blog removed successfully')
         setTimeout(() => {
           setSuccessMessage('')
         }, 3000)
       }
-      
+
     }
     catch (exception) {
       setErrorMessage(`Couldn't remove blog: ${ exception.message }`)
@@ -161,8 +161,6 @@ const App = () => {
     </form>
   )
 
-  
-
   const showBlogs = () => (
     <div>
       <div>
@@ -176,7 +174,7 @@ const App = () => {
       {
         blogs
           .sort((a, b) => b.likes - a.likes)
-          .map(blog => 
+          .map(blog =>
             <Blog
               key={ blog.id }
               user={ user }
