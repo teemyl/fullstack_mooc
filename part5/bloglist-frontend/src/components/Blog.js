@@ -19,7 +19,7 @@ const Blog = ({ user, blog, updateBlog, removeBlog }) => {
   const renderDetails = () => (
     <>
       { blog.url }<br />
-      likes { blog.likes} <button onClick={ handleLike }>like</button><br />
+      likes { blog.likes} <button className='likeButton' onClick={ handleLike }>like</button><br />
       {
         user.username === blog.user.username
         && <button onClick={ handleRemove }>remove</button>
@@ -38,7 +38,7 @@ const Blog = ({ user, blog, updateBlog, removeBlog }) => {
   return (
     <div className='blog' style={ blogStyle }>
       { blog.title } by { blog.author }&nbsp;
-      <button onClick={ () => setViewDetails(!viewDetails) }>
+      <button class='toggleViewButton' onClick={ () => setViewDetails(!viewDetails) }>
         { viewDetails ? 'hide' : 'view' }
       </button>
       <br />

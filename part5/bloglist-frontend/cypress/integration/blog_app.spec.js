@@ -1,3 +1,5 @@
+const { func } = require("prop-types")
+
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3001/api/testing/reset')
@@ -64,6 +66,23 @@ describe('Blog app', function() {
         .click()
 
       cy.contains('New Blog from Cypress')
+    })
+
+    describe('and a blog exists', function(){
+      beforeEach(function(){
+        cy.createBlog({
+          title: 'New Blog from Cypress',
+          author: 'Cypress Runner',
+          url: 'testurl.com'
+        })
+      })
+
+      it('can be liked', function(){
+        cy.contains('New Blog from Cypress').parent().as('newBlog')
+        cy.get('@newBlog').get('.toggleViewButton').click()
+        cy.get('@newBlog').get('.likeButton').click()
+        cy.get('@newBlog').contains('likes 1')
+      })
     })
   })
 
