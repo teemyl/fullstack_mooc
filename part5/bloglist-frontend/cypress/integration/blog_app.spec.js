@@ -4,12 +4,11 @@ describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3001/api/testing/reset')
     
-    const user = {
-      name: 'Test User',
-      username: 'testuser',
-      password: 'password'
-    }
+    const user = { name: 'Test User', username: 'testuser', password: 'password' }
     cy.request('POST', 'http://localhost:3001/api/users', user)
+
+    const altUser = { name: 'Other User', username: 'altuser', password: 'password' }
+    cy.request('POST', 'http://localhost:3001/api/users', altUser)
     
     cy.visit('http://localhost:3000')
   })
@@ -46,8 +45,11 @@ describe('Blog app', function() {
     })
   })
 
-  describe.only('When logged in', function(){
+  describe('When logged in', function(){
     beforeEach(function(){
+      cy.login({ username: 'altuser', password: 'password' })
+      cy.createBlog({ title: 'Added by Another User', author: 'Other User', url: '123.com' })
+      cy.logout()
       cy.login({ username: 'testuser', password: 'password' })
     })
 
@@ -77,11 +79,39 @@ describe('Blog app', function() {
         })
       })
 
-      it('can be liked', function(){
-        cy.contains('New Blog from Cypress').parent().as('newBlog')
-        cy.get('@newBlog').get('.toggleViewButton').click()
-        cy.get('@newBlog').get('.likeButton').click()
-        cy.get('@newBlog').contains('likes 1')
+      describe('and is created by the user', function(){
+        it('can be removed', function(){
+          cy.contains('New Blog from Cypress').within(function(){
+            cy.get('.toggleViewButton').click()
+            cy.get('.removeButton').click()
+          })
+          cy.contains('New Blog from Cypress').should('not.exist')
+        })
+        
+        it('can be liked', function(){
+          cy.contains('New Blog from Cypress').within(function(){
+            cy.get('.toggleViewButton').click()
+            cy.get('.likeButton').click()
+            cy.contains('likes 1')
+          })
+        })
+      })
+
+      describe('and is NOT created by the user', function(){
+        it('cannot be removed', function(){
+          cy.contains('Added by Another User').within(function(){
+            cy.get('.toggleViewButton').click()
+            cy.get('.removeButton').should('not.exist')
+          })
+        })
+
+        it('can be liked', function(){
+          cy.contains('Added by Another User').within(function(){
+            cy.get('.toggleViewButton').click()
+            cy.get('.likeButton').click()
+            cy.contains('likes 1')
+          })
+        })
       })
     })
   })

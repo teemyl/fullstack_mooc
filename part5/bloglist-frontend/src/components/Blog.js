@@ -22,7 +22,7 @@ const Blog = ({ user, blog, updateBlog, removeBlog }) => {
       likes { blog.likes} <button className='likeButton' onClick={ handleLike }>like</button><br />
       {
         user.username === blog.user.username
-        && <button onClick={ handleRemove }>remove</button>
+        && <button className='removeButton' onClick={ handleRemove }>remove</button>
       }
     </>
   )
