@@ -19,9 +19,6 @@ const user = {
   username: 'testuser'
 }
 
-const mockUpdate = jest.fn()
-const mockRemove = jest.fn()
-
 describe('initially', () => {
   
   test('renders title', () => {
@@ -29,8 +26,6 @@ describe('initially', () => {
       <Blog 
         blog={ blog }
         user={ user }
-        updateBlog={ mockUpdate }
-        removeBlog={ mockRemove }
       />
     )
 
@@ -44,8 +39,6 @@ describe('initially', () => {
       <Blog 
         blog={ blog }
         user={ user }
-        updateBlog={ mockUpdate }
-        removeBlog={ mockRemove }
       />
     )
 
@@ -59,8 +52,6 @@ describe('initially', () => {
       <Blog 
         blog={ blog }
         user={ user }
-        updateBlog={ mockUpdate }
-        removeBlog={ mockRemove }
       />
     )
     
@@ -74,8 +65,6 @@ describe('initially', () => {
       <Blog 
         blog={ blog }
         user={ user }
-        updateBlog={ mockUpdate }
-        removeBlog={ mockRemove }
       />
     )
     
@@ -94,8 +83,6 @@ describe('clicking the view button', () => {
       <Blog 
         blog={ blog }
         user={ user }
-        updateBlog={ mockUpdate }
-        removeBlog={ mockRemove }
       />
     )
     
@@ -112,8 +99,6 @@ describe('clicking the view button', () => {
       <Blog 
         blog={ blog }
         user={ user }
-        updateBlog={ mockUpdate }
-        removeBlog={ mockRemove }
       />
     )
     
@@ -130,8 +115,6 @@ describe('clicking the view button', () => {
       <Blog 
         blog={ blog }
         user={ user }
-        updateBlog={ mockUpdate }
-        removeBlog={ mockRemove }
       />
     )
     
@@ -146,8 +129,6 @@ describe('clicking the view button', () => {
       <Blog 
         blog={ blog }
         user={ user }
-        updateBlog={ mockUpdate }
-        removeBlog={ mockRemove }
       />
     )
     
@@ -155,5 +136,28 @@ describe('clicking the view button', () => {
     fireEvent.click(button)
     
     expect(component.container).toHaveTextContent('14')
+  })
+})
+
+describe('clicking the like button', () => {
+  test('twice calls event handler twice', () => {
+    const mockUpdate = jest.fn()
+    
+    const component = render(
+      <Blog 
+        blog={ blog }
+        user={ user }
+        updateBlog={ mockUpdate }
+      />
+    )
+    
+    const viewButton = component.getByText('view')
+    fireEvent.click(viewButton)
+
+    const likeButton = component.getByText('like')
+    fireEvent.click(likeButton)
+    fireEvent.click(likeButton)
+
+    expect(mockUpdate.mock.calls).toHaveLength(2)
   })
 })
