@@ -170,7 +170,11 @@ const App = () => {
         <button onClick={ handleLogout }>logout</button>
       </div>
       <h2>create new</h2>
-      <Toggleable buttonLabel='add blog' ref={ blogFormRef }>
+      <Toggleable
+        buttonClassName='blogForm'
+        buttonLabel='add blog'
+        ref={ blogFormRef }
+      >
         <BlogForm createBlog={ addBlog } />
       </Toggleable>
       {
