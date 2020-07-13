@@ -20,7 +20,6 @@ const Blog = ({ user, blog, updateBlog, removeBlog }) => {
     <>
       { blog.url }<br />
       likes { blog.likes} <button onClick={ handleLike }>like</button><br />
-      { blog.author }<br />
       {
         user.username === blog.user.username
         && <button onClick={ handleRemove }>remove</button>
@@ -37,8 +36,8 @@ const Blog = ({ user, blog, updateBlog, removeBlog }) => {
   }
 
   return (
-    <div style={ blogStyle }>
-      { blog.title }&nbsp;
+    <div className='blog' style={ blogStyle }>
+      { blog.title } by { blog.author }&nbsp;
       <button onClick={ () => setViewDetails(!viewDetails) }>
         { viewDetails ? 'hide' : 'view' }
       </button>
