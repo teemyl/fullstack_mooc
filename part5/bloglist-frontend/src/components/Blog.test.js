@@ -1,73 +1,159 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
-import { render } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import Blog from './Blog'
 
-
-test('renders title', () => {
-  const blog = {
-    title: 'Blog title of a test case',
-    author: 'Test Case Author',
-    url: 'testcaseurl.com',
-    likes: 14
+const blog = {
+  title: 'Blog title of a test case',
+  author: 'Test Case Author',
+  url: 'testcaseurl.com',
+  likes: 14,
+  user: {
+    name: 'Test User',
+    username: 'testuser'
   }
+}
 
-  const component = render(
-    <Blog blog={ blog } />
-  )
+const user = {
+  name: 'Test User',
+  username: 'testuser'
+}
 
-  expect(component.container).toHaveTextContent(
-    'Blog title of a test case'
-  )
+const mockUpdate = jest.fn()
+const mockRemove = jest.fn()
+
+describe('initially', () => {
+  
+  test('renders title', () => {
+    const component = render(
+      <Blog 
+        blog={ blog }
+        user={ user }
+        updateBlog={ mockUpdate }
+        removeBlog={ mockRemove }
+      />
+    )
+
+    expect(component.container).toHaveTextContent(
+      'Blog title of a test case'
+    )
+  })
+  
+  test('renders author', () => {
+    const component = render(
+      <Blog 
+        blog={ blog }
+        user={ user }
+        updateBlog={ mockUpdate }
+        removeBlog={ mockRemove }
+      />
+    )
+
+    expect(component.container).toHaveTextContent(
+      'Test Case Author'
+    )
+  })
+  
+  test('does not render url', () => {
+    const component = render(
+      <Blog 
+        blog={ blog }
+        user={ user }
+        updateBlog={ mockUpdate }
+        removeBlog={ mockRemove }
+      />
+    )
+    
+    expect(component.container).not.toHaveTextContent(
+      'testcaseurl.com'
+    )
+  })
+  
+  test('does not render likes', () => {
+    const component = render(
+      <Blog 
+        blog={ blog }
+        user={ user }
+        updateBlog={ mockUpdate }
+        removeBlog={ mockRemove }
+      />
+    )
+    
+    expect(component.container).not.toHaveTextContent(
+      '14'
+    )
+  })
 })
 
-test('renders author', () => {
-  const blog = {
-    title: 'Blog title of a test case',
-    author: 'Test Case Author',
-    url: 'testcaseurl.com',
-    likes: 14
-  }
+describe('clicking the view button', () => {
+  beforeEach(() => {
+  })
 
-  const component = render(
-    <Blog blog={ blog } />
-  )
+  test('still renders title', () => {
+    const component = render(
+      <Blog 
+        blog={ blog }
+        user={ user }
+        updateBlog={ mockUpdate }
+        removeBlog={ mockRemove }
+      />
+    )
+    
+    const button = component.getByText('view')
+    fireEvent.click(button)
+    
+    expect(component.container).toHaveTextContent(
+      'Blog title of a test case'
+    )
+  })
+  
+  test('still renders author', () => {
+    const component = render(
+      <Blog 
+        blog={ blog }
+        user={ user }
+        updateBlog={ mockUpdate }
+        removeBlog={ mockRemove }
+      />
+    )
+    
+    const button = component.getByText('view')
+    fireEvent.click(button)
+    
+    expect(component.container).toHaveTextContent(
+      'Test Case Author'
+    )
+  })
 
-  expect(component.container).toHaveTextContent(
-    'Test Case Author'
-  )
-})
-
-test('does not render url', () => {
-  const blog = {
-    title: 'Blog title of a test case',
-    author: 'Test Case Author',
-    url: 'testcaseurl.com',
-    likes: 14
-  }
-
-  const component = render(
-    <Blog blog={ blog } />
-  )
-
-  expect(component.container).not.toHaveTextContent(
-    'testcaseurl.com'
-  )
-})
-
-test('does not render likes', () => {
-  const blog = {
-    title: 'Blog title of a test case',
-    author: 'Test Case Author',
-    url: 'testcaseurl.com',
-    likes: 14
-  }
-
-  const component = render(
-    <Blog blog={ blog } />
-  )
-
-  expect(component.container).not.toHaveTextContent(
-    '14'
-  )
+  test('renders url', () => {
+    const component = render(
+      <Blog 
+        blog={ blog }
+        user={ user }
+        updateBlog={ mockUpdate }
+        removeBlog={ mockRemove }
+      />
+    )
+    
+    const button = component.getByText('view')
+    fireEvent.click(button)
+    
+    expect(component.container).toHaveTextContent('testcaseurl.com')
+  })
+  
+  test('renders likes', () => {
+    const component = render(
+      <Blog 
+        blog={ blog }
+        user={ user }
+        updateBlog={ mockUpdate }
+        removeBlog={ mockRemove }
+      />
+    )
+    
+    const button = component.getByText('view')
+    fireEvent.click(button)
+    
+    expect(component.container).toHaveTextContent('14')
+  })
 })
