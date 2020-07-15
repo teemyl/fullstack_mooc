@@ -1,6 +1,5 @@
-const initialNotification = 'Application initialized'
 
-const reducer = (state = initialNotification, action) => {
+const reducer = (state = '', action) => {
   switch (action.type) {
     case 'NEW_MESSAGE':
       return action.message

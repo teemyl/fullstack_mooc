@@ -1,19 +1,15 @@
 import React from 'react'
 import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, connect } from 'react-redux'
 import { incrementVotesOf, initializeAnecdotes } from '../reducers/anecdoteReducer'
-import { setNotification, clearNotification } from '../reducers/notificationReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const AnecdoteList = () => {
-  const anecdotes = useSelector(state => state.anecdotes)
-  const filter = useSelector(state => state.filter)
+const AnecdoteList = (props) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(initializeAnecdotes())
-    setTimeout(() => {
-      dispatch(clearNotification())
-    }, 3000)
+    dispatch(setNotification('Application initialized', 3))
   }, [dispatch])
   
   const vote = anecdote => {
@@ -24,9 +20,9 @@ const AnecdoteList = () => {
   return (
     <div>
       {
-        anecdotes
+        props.anecdotes
           .filter(a =>
-            a.content.toUpperCase().includes(filter.toUpperCase())
+            a.content.toUpperCase().includes(props.filter.toUpperCase())
           )
           .map(anecdote =>
             <div key={ anecdote.id }>
@@ -44,4 +40,11 @@ const AnecdoteList = () => {
   )
 }
 
-export default AnecdoteList
+const mapStateToProps = (state) => {
+  return {
+    anecdotes: state.anecdotes,
+    filter: state.filter
+  }
+}
+
+export default connect(mapStateToProps)(AnecdoteList)
