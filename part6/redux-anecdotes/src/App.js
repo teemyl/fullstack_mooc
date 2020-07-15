@@ -31,7 +31,8 @@ const App = () => {
               has { anecdote.votes }
               <button onClick={ () => vote(anecdote.id) }>vote</button>
             </div>
-          </div>)
+          </div>
+        )
       }
       <h2>create new</h2>
       <form onSubmit={ addAnecdote }>

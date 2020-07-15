@@ -23,14 +23,20 @@ const reducer = (state = initialState, action) => {
   console.log('state now: ', state)
   console.log('action', action)
   
+  let newState = null
+
   switch (action.type){
     case 'INCREMENT_VOTE':
-      return state.map(a => a.id === action.id ? { ...a, votes: a.votes += 1 } : a)
+      newState = state.map(a => a.id === action.id ? { ...a, votes: a.votes += 1 } : a)
+      break
     case 'NEW_ANECDOTE':
-      return [...state, action.data]
+      newState = [...state, action.data]
+      break
     default:
-      return state
+      newState = [...state]
   }
+
+  return newState.sort((a, b) => b.votes - a.votes)
 }
 
 export const incrementVotesOf = id => {
