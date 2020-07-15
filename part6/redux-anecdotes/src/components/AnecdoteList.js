@@ -2,7 +2,7 @@ import React from 'react'
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { incrementVotesOf, initializeAnecdotes } from '../reducers/anecdoteReducer'
-import { updateNotification, removeNotification } from '../reducers/notificationReducer'
+import { setNotification, clearNotification } from '../reducers/notificationReducer'
 
 const AnecdoteList = () => {
   const anecdotes = useSelector(state => state.anecdotes)
@@ -12,16 +12,13 @@ const AnecdoteList = () => {
   useEffect(() => {
     dispatch(initializeAnecdotes())
     setTimeout(() => {
-      dispatch(removeNotification())
-    }, 5000)
+      dispatch(clearNotification())
+    }, 3000)
   }, [dispatch])
   
   const vote = anecdote => {
     dispatch(incrementVotesOf(anecdote))
-    dispatch(updateNotification(`you voted '${ anecdote.content }'`))
-    setTimeout(() => {
-      dispatch(removeNotification())
-    }, 5000)
+    dispatch(setNotification(`you voted '${ anecdote.content }'`, 3))
   }
 
   return (
