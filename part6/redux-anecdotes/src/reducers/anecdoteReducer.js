@@ -8,7 +8,7 @@ const reducer = (state = [], action) => {
 
   switch (action.type) {
     case 'INCREMENT_VOTE':
-      newState = state.map(a => a.id === action.id ? { ...a, votes: a.votes += 1 } : a)
+      newState = state.map(a => a.id === action.id ? { ...a, votes: action.votes } : a)
       break
     case 'NEW_ANECDOTE':
       newState = [...state, action.data]
@@ -23,10 +23,15 @@ const reducer = (state = [], action) => {
   return newState.sort((a, b) => b.votes - a.votes)
 }
 
-export const incrementVotesOf = id => {
-  return {
-    type: 'INCREMENT_VOTE',
-    id: id
+export const incrementVotesOf = anecdote => {
+  return async dispatch => {
+    const newObject = {...anecdote, votes: anecdote.votes += 1 }
+    const updatedAnecdote = await anecdoteService.update(anecdote.id, newObject)
+    dispatch({
+      type: 'INCREMENT_VOTE',
+      id: updatedAnecdote.id,
+      votes: updatedAnecdote.votes
+    })
   }
 }
 
