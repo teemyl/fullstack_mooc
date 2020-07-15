@@ -1,20 +1,22 @@
 import React from 'react'
 import { useEffect } from 'react'
-import { useDispatch, connect } from 'react-redux'
+import { connect } from 'react-redux'
 import { incrementVotesOf, initializeAnecdotes } from '../reducers/anecdoteReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const AnecdoteList = (props) => {
-  const dispatch = useDispatch()
+  const _initializeAnecdotes = props.initializeAnecdotes
+  const _setNotification = props.setNotification
+  const _incrementVotesOf = props.incrementVotesOf
 
   useEffect(() => {
-    dispatch(initializeAnecdotes())
-    dispatch(setNotification('Application initialized', 3))
-  }, [dispatch])
+    _initializeAnecdotes()
+    _setNotification('Application initialized', 3)
+  }, [_initializeAnecdotes, _setNotification])
   
   const vote = anecdote => {
-    dispatch(incrementVotesOf(anecdote))
-    dispatch(setNotification(`you voted '${ anecdote.content }'`, 3))
+    _incrementVotesOf(anecdote)
+    _setNotification(`you voted '${ anecdote.content }'`, 3)
   }
 
   return (
@@ -47,4 +49,13 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(AnecdoteList)
+const mapDispatchToProps = {
+  incrementVotesOf,
+  initializeAnecdotes,
+  setNotification
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AnecdoteList)
