@@ -5,6 +5,7 @@ import { updateNotification, removeNotification } from '../reducers/notification
 
 const AnecdoteList = () => {
   const anecdotes = useSelector(state => state.anecdotes)
+  const filter = useSelector(state => state.filter)
   const dispatch = useDispatch()
   
   const vote = anecdote => {
@@ -19,17 +20,21 @@ const AnecdoteList = () => {
   return (
     <div>
       {
-        anecdotes.map(anecdote =>
-          <div key={ anecdote.id }>
-            <div>
-              { anecdote.content }
+        anecdotes
+          .filter(a =>
+            a.content.toUpperCase().includes(filter.toUpperCase())
+          )
+          .map(anecdote =>
+            <div key={ anecdote.id }>
+              <div>
+                { anecdote.content }
+              </div>
+              <div>
+                has { anecdote.votes }
+                <button onClick={ () => vote(anecdote) }>vote</button>
+              </div>
             </div>
-            <div>
-              has { anecdote.votes }
-              <button onClick={ () => vote(anecdote) }>vote</button>
-            </div>
-          </div>
-        )
+          )
       }
     </div>
   )

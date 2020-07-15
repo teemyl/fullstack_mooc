@@ -25,7 +25,7 @@ const reducer = (state = initialState, action) => {
   
   let newState = null
 
-  switch (action.type){
+  switch (action.type) {
     case 'INCREMENT_VOTE':
       newState = state.map(a => a.id === action.id ? { ...a, votes: a.votes += 1 } : a)
       break
