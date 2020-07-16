@@ -5,3 +5,4 @@
 [Part 3](https://github.com/teemyl/fullstack_mooc/tree/master/part3)<br>
 [Part 4](https://github.com/teemyl/fullstack_mooc/tree/master/part4)<br>
 [Part 5](https://github.com/teemyl/fullstack_mooc/tree/master/part5)<br>
+[Part 6](https://github.com/teemyl/fullstack_mooc/tree/master/part6)<br>
