@@ -12,10 +12,10 @@ const Notification = () => {
     marginBottom: 10
   }
 
-  return notification
+  return notification.message
   ? (
-      <div style={style}>
-        { notification }
+      <div style={ style }>
+        { notification.message }
       </div>
     )
   : (<div></div>)

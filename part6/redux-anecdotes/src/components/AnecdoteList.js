@@ -11,12 +11,12 @@ const AnecdoteList = (props) => {
 
   useEffect(() => {
     _initializeAnecdotes()
-    _setNotification('Application initialized', 3)
+    _setNotification('Application initialized', 5)
   }, [_initializeAnecdotes, _setNotification])
   
   const vote = anecdote => {
     _incrementVotesOf(anecdote)
-    _setNotification(`you voted '${ anecdote.content }'`, 3)
+    _setNotification(`you voted '${ anecdote.content }'`, 5)
   }
 
   return (
