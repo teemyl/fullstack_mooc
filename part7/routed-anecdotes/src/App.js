@@ -1,8 +1,5 @@
 import React, { useState } from 'react'
-import {
-  BrowserRouter as Router,
-  Link, Switch, Route
-} from 'react-router-dom'
+import { useRouteMatch, Link, Switch, Route } from 'react-router-dom'
 
 const Menu = () => {
   const padding = {
@@ -21,8 +18,25 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {
+        anecdotes.map(anecdote => (
+          <li key={ anecdote.id } >
+            <Link to={ `/anecdotes/${ anecdote.id }` }>
+              { anecdote.content }
+            </Link>
+          </li>
+        ))
+      }
     </ul>
+  </div>
+)
+
+const Anecdote = ({ anecdote }) => (
+  <div>
+    <h3><em>{ anecdote.content }</em></h3>
+    author: { anecdote.author }<br />
+    url: <a href={ anecdote.info }>{ anecdote.info }</a><br />
+    votes: { anecdote.votes }
   </div>
 )
 
@@ -40,8 +54,12 @@ const About = () => (
   </div>
 )
 
+const footerStyle = {
+  marginTop: 20
+}
+
 const Footer = () => (
-  <div>
+  <div style={ footerStyle }>
     Anecdote app for <a href='https://courses.helsinki.fi/fi/tkt21009'>Full Stack -websovelluskehitys</a>.
 
     See <a href='https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js'>https://github.com/fullstack-hy2019/routed-anecdotes/blob/master/src/App.js</a> for the source code.
@@ -126,23 +144,29 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  const match = useRouteMatch('/anecdotes/:id')
+  const anecdote = match
+    ? anecdoteById(match.params.id)
+    : null
+
   return (
     <div>
       <h1>Software anecdotes</h1>
-      <Router>
-        <Menu />
-        <Switch>
-          <Route path='/about'>
-            <About />
-          </Route>
-          <Route path='/create'>
-            <CreateNew addNew={addNew} />
-          </Route>
-          <Route path='/'>
-            <AnecdoteList anecdotes={anecdotes} />
-          </Route>
-        </Switch>
-      </Router>
+      <Menu />
+      <Switch>
+        <Route path='/about'>
+          <About />
+        </Route>
+        <Route path='/create'>
+          <CreateNew addNew={ addNew } />
+        </Route>
+        <Route path='/anecdotes/:id'>
+          <Anecdote anecdote={ anecdote } />
+        </Route>
+        <Route path='/'>
+          <AnecdoteList anecdotes={ anecdotes } />
+        </Route>
+      </Switch>
       <Footer />
     </div>
   )
