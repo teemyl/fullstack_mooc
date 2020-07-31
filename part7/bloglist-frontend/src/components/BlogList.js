@@ -34,7 +34,6 @@ const BlogList = ({ blogs }) => {
           .map(blog =>
             <BlogListItem
               key={ blog.id }
-              user={ user }
               blog={ blog } />
           )
       }
