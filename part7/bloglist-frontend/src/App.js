@@ -13,9 +13,10 @@ import BlogList from './components/BlogList'
 import Notification from './components/Notification'
 import User from './components/User'
 import Blog from './components/Blog'
+import Navigation from './components/Navigation'
 
 import { getBlogs } from './reducers/blogReducer'
-import { login, logout } from './reducers/loginReducer'
+import { login } from './reducers/loginReducer'
 import { getUsers } from './reducers/userReducer'
 
 const App = () => {
@@ -46,10 +47,6 @@ const App = () => {
 
     setUsername('')
     setPassword('')
-  }
-
-  const handleLogout = async () => {
-    dispatch(logout())
   }
 
   const loginForm = () => (
@@ -102,13 +99,6 @@ const App = () => {
     </div>
   )
 
-  const showLoginStatus = () => (
-    <div>
-      { user.name } logged in &nbsp;
-      <button onClick={ handleLogout }>logout</button>
-    </div>
-  )
-
   const userMatch = useRouteMatch('/users/:id')
   const matchedUser = userMatch
     ? users.find(u => u.id === userMatch.params.id)
@@ -118,18 +108,25 @@ const App = () => {
   const matchedBlog = blogMatch
     ? blogs.find(b => b.id === blogMatch.params.id)
     : null
+  
+  if (!user) {
+    return loginForm()
+  }
 
   return (
     <div>
+      { 
+        user && 
+        <Navigation user={ user } />
+      }
       <h2>{ user === null ? 'log in' : 'blogs' }</h2>
-      { user && showLoginStatus() }
       <Notification />
       <Switch>
         <Route path='/users/:id'>
-          { user ? <User user={ matchedUser } /> : loginForm() }
+          <User user={ matchedUser } />
         </Route>
         <Route path='/users'>
-          { user ? showUsers() : loginForm() }
+          { showUsers() }
         </Route>
         <Route path='/blogs/:id'>
           <Blog blog={ matchedBlog } user={ user } />

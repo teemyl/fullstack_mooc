@@ -21,13 +21,13 @@ const BlogList = ({ blogs }) => {
   
   return (
     <div>
-      <h2>create new</h2>
       <Toggleable
         buttonClassName='blogForm'
         buttonLabel='add blog'
         ref={ blogFormRef }>
         <BlogForm createBlog={ addBlog } />
       </Toggleable>
+      <br />
       {
         blogs
           .sort((a, b) => b.likes - a.likes)
