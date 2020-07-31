@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 // Import components
 import Blog from './components/Blog'
@@ -12,13 +12,17 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 import { setMessage } from './reducers/notificationReducer'
+import { getBlogs, createBlog } from './reducers/blogReducer'
 
 const App = () => {
   // States
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [blogs, setBlogs] = useState([])
+  const [_blogs, setBlogs] = useState([])
+
+  // Redux states
+  const blogs = useSelector(state => state.blogs)
 
   // References
   const blogFormRef = useRef()
@@ -27,8 +31,7 @@ const App = () => {
 
   useEffect(() => {
     const getAll = async () => {
-      const allBlogs = await blogService.getAll()
-      setBlogs(allBlogs)
+      dispatch(getBlogs())
     }
     getAll()
   }, [])
@@ -66,15 +69,8 @@ const App = () => {
   }
 
   const addBlog = async (blogObject) => {
-    try {
-      blogFormRef.current.toggleVisibility()
-      const newBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(newBlog))
-      dispatch(setMessage(`A new blog ${ newBlog.title } by ${ newBlog.author } added`, 'success'))
-    }
-    catch (exception) {
-      dispatch(setMessage(`Couldn't create new blog: ${ exception.message }`, 'error'))
-    }
+    blogFormRef.current.toggleVisibility()
+    dispatch(createBlog(blogObject))
   }
 
   const updateBlog = async (blog) => {
