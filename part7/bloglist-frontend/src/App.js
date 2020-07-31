@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  BrowserRouter as Router,
-  Switch, Route, Link
+  Switch,
+  Route,
+  Link,
+  useRouteMatch 
 } from 'react-router-dom'
 
 // Import components
@@ -10,6 +12,7 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Toggleable from './components/Toggleable'
+import User from './components/User'
 
 import { getBlogs, createBlog } from './reducers/blogReducer'
 import { login, logout } from './reducers/loginReducer'
@@ -85,10 +88,6 @@ const App = () => {
 
   const showBlogs = () => (
     <div>
-      <div>
-        { user.name } logged in
-        <button onClick={ handleLogout }>logout</button>
-      </div>
       <h2>create new</h2>
       <Toggleable
         buttonClassName='blogForm'
@@ -124,7 +123,7 @@ const App = () => {
           {
             users.map(u => (
               <tr key={ u.id }>
-                <td>{ u.name }</td>
+                <td><Link to={ `/users/${ u.id }` }>{ u.name }</Link></td>
                 <td>{ u.blogs.length }</td>
               </tr>
             ))
@@ -134,21 +133,34 @@ const App = () => {
     </div>
   )
 
+  const showLoginStatus = () => (
+    <div>
+      { user.name } logged in &nbsp;
+      <button onClick={ handleLogout }>logout</button>
+    </div>
+  )
+
+  const match = useRouteMatch('/users/:id')
+  const matchedUser = match
+    ? users.find(u => u.id === match.params.id)
+    : null
+
   return (
     <div>
       <h2>{ user === null ? 'log in' : 'blogs' }</h2>
+      { user && showLoginStatus() }
       <Notification />
-      <Router>
-        <Switch>
-          <Route path='/users'>
-            { user === null ? loginForm() : showUsers() }
-          </Route>
-          <Route path='/'>
-            { user === null ? loginForm() : showBlogs() }
-          </Route>
-        </Switch>
-      </Router>
-      
+      <Switch>
+        <Route path='/users/:id'>
+          { user ? <User user={ matchedUser } /> : loginForm() }
+        </Route>
+        <Route path='/users'>
+          { user ? showUsers() : loginForm() }
+        </Route>
+        <Route path='/'>
+          { user ? showBlogs() : loginForm() }
+        </Route>
+      </Switch>
     </div>
   )
 }
