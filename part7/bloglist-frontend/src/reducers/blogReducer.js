@@ -7,6 +7,10 @@ const reducer = (state = [], action) => {
       return action.data ? action.data : state
     case 'NEW_BLOG':
       return state.concat(action.data)
+    case 'UPDATE_BLOG':
+      return state.map(b => b.id === action.data.id ? action.data : b)
+    case 'REMOVE_BLOG':
+      return state.filter(b => b.id !== action.data.id)
     default:
       return state
   }
@@ -22,10 +26,10 @@ export const getBlogs = () => {
   }
 }
 
-export const createBlog = (blogObject) => {
+export const createBlog = (blog) => {
   return async dispatch => {
     try {
-      const newBlog = await blogService.create(blogObject)
+      const newBlog = await blogService.create(blog)
       dispatch({
         type: 'NEW_BLOG',
         data: newBlog
@@ -34,6 +38,46 @@ export const createBlog = (blogObject) => {
     }
     catch (exception) {
       dispatch(setMessage(`Couldn't create new blog: ${ exception.message }`, 'error'))
+    }
+  }
+}
+
+export const updateBlog = (blog) => {
+  return async dispatch => {
+    try {
+      // Format the user field to only include the id
+      const updatedBlog = await blogService.update({
+        ...blog,
+        user: blog.user.id
+      })
+
+      dispatch({
+        type: 'UPDATE_BLOG',
+        data: updatedBlog
+      })
+
+      dispatch(setMessage(`Updated ${ updatedBlog.title } by ${ updatedBlog.author }`, 'success'))
+    }
+    catch (exception) {
+      dispatch(setMessage(`Couldn't update blog: ${ exception.message }`, 'error'))
+    }
+  }
+}
+
+export const removeBlog = (blog) => {
+  return async dispatch => {
+    try {
+      await blogService.remove(blog)
+      
+      dispatch({
+        type: 'REMOVE_BLOG',
+        data: blog
+      })
+
+      dispatch(setMessage('Blog removed successfully', 'success'))
+    }
+    catch (exception) {
+      dispatch(setMessage(`Couldn't remove blog: ${ exception.message }`, 'error'))
     }
   }
 }

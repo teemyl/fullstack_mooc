@@ -19,7 +19,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [_blogs, setBlogs] = useState([])
 
   // Redux states
   const blogs = useSelector(state => state.blogs)
@@ -34,6 +33,7 @@ const App = () => {
       dispatch(getBlogs())
     }
     getAll()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -71,40 +71,6 @@ const App = () => {
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     dispatch(createBlog(blogObject))
-  }
-
-  const updateBlog = async (blog) => {
-    try {
-      // Format the user field to only include the id
-      const updatedBlog = await blogService.update({
-        ...blog,
-        user: blog.user.id
-      })
-
-      setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
-
-      dispatch(setMessage(`Updated ${ updatedBlog.title } by ${ updatedBlog.author }`, 'success'))
-    }
-    catch (exception) {
-      dispatch(setMessage(`Couldn't update blog: ${ exception.message }`, 'error'))
-    }
-  }
-
-  const removeBlog = async (blog) => {
-    try {
-      const result = window.confirm(`Remove ${ blog.title } ny ${ blog.author }?`)
-      if (result) {
-        await blogService.remove(blog)
-
-        setBlogs(blogs.filter(b => b.id !== blog.id))
-
-        dispatch(setMessage('Blog removed successfully', 'success'))
-      }
-
-    }
-    catch (exception) {
-      dispatch(setMessage(`Couldn't remove blog: ${ exception.message }`, 'error'))
-    }
   }
 
   const handleLogout = async () => {
@@ -159,9 +125,7 @@ const App = () => {
             <Blog
               key={ blog.id }
               user={ user }
-              blog={ blog }
-              updateBlog={ updateBlog }
-              removeBlog={ removeBlog } />
+              blog={ blog } />
           )
       }
     </div>

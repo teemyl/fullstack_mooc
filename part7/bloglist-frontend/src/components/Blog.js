@@ -1,19 +1,23 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { updateBlog, removeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ user, blog, updateBlog, removeBlog }) => {
+const Blog = ({ user, blog }) => {
 
   const [viewDetails, setViewDetails] = useState(false)
+  const dispatch = useDispatch()
 
-  const handleLike = () => {
-    updateBlog({
-      ...blog,
-      likes: blog.likes + 1
-    })
+  const handleLike = () => {    
+    dispatch(
+      updateBlog({ ...blog, likes: blog.likes + 1 })
+    )
   }
 
   const handleRemove = () => {
-    removeBlog(blog)
+    const result = window.confirm(`Remove ${ blog.title } ny ${ blog.author }?`)
+    if (result)
+      dispatch(removeBlog(blog))
   }
 
   const renderDetails = () => (
@@ -48,10 +52,8 @@ const Blog = ({ user, blog, updateBlog, removeBlog }) => {
 }
 
 Blog.propTypes = {
-  user: PropTypes.func.isRequired,
-  blog: PropTypes.func.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  removeBlog: PropTypes.func.isRequired
+  user: PropTypes.object.isRequired,
+  blog: PropTypes.object.isRequired,
 }
 
 export default Blog
