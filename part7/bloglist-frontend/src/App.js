@@ -7,21 +7,17 @@ import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Toggleable from './components/Toggleable'
 
-// Import services
-import blogService from './services/blogs'
-import loginService from './services/login'
-
-import { setMessage } from './reducers/notificationReducer'
 import { getBlogs, createBlog } from './reducers/blogReducer'
+import { login, logout } from './reducers/loginReducer'
 
 const App = () => {
   // States
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
 
   // Redux states
   const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
 
   // References
   const blogFormRef = useRef()
@@ -36,36 +32,13 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    const loggedInUserJSON = window.localStorage.getItem('loggedInUser')
-    if (loggedInUserJSON) {
-      const user = JSON.parse(loggedInUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
-
   const handleLogin = async (event) => {
     event.preventDefault()
 
-    try {
-      const user = await loginService.login({
-        username, password
-      })
+    dispatch(login(username, password))
 
-      window.localStorage.setItem(
-        'loggedInUser', JSON.stringify(user)
-      )
-
-      setUser(user)
-      blogService.setToken(user.token)
-      setUsername('')
-      setPassword('')
-      dispatch(setMessage(`Logged in successfully as ${ user.name }`, 'success'))
-    }
-    catch (exception) {
-      dispatch(setMessage('Invalid username or password', 'error'))
-    }
+    setUsername('')
+    setPassword('')
   }
 
   const addBlog = async (blogObject) => {
@@ -74,8 +47,7 @@ const App = () => {
   }
 
   const handleLogout = async () => {
-    window.localStorage.clear()
-    setUser(null)
+    dispatch(logout())
   }
 
   const loginForm = () => (
