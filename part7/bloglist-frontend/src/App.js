@@ -1,20 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   Switch,
   Route,
   Link,
-  useRouteMatch 
+  useRouteMatch, 
+  Redirect
 } from 'react-router-dom'
 
 // Import components
-import Blog from './components/Blog'
+import BlogList from './components/BlogList'
 import Notification from './components/Notification'
-import BlogForm from './components/BlogForm'
-import Toggleable from './components/Toggleable'
 import User from './components/User'
+import Blog from './components/Blog'
 
-import { getBlogs, createBlog } from './reducers/blogReducer'
+import { getBlogs } from './reducers/blogReducer'
 import { login, logout } from './reducers/loginReducer'
 import { getUsers } from './reducers/userReducer'
 
@@ -23,13 +23,10 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  // Redux states
-  const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
   const users = useSelector(state => state.users)
+  const blogs = useSelector(state => state.blogs)
 
-  // References
-  const blogFormRef = useRef()
 
   const dispatch = useDispatch()
 
@@ -49,11 +46,6 @@ const App = () => {
 
     setUsername('')
     setPassword('')
-  }
-
-  const addBlog = async (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-    dispatch(createBlog(blogObject))
   }
 
   const handleLogout = async () => {
@@ -84,29 +76,6 @@ const App = () => {
       </div>
       <button id='loginButton' type='submit'>login</button>
     </form>
-  )
-
-  const showBlogs = () => (
-    <div>
-      <h2>create new</h2>
-      <Toggleable
-        buttonClassName='blogForm'
-        buttonLabel='add blog'
-        ref={ blogFormRef }
-      >
-        <BlogForm createBlog={ addBlog } />
-      </Toggleable>
-      {
-        blogs
-          .sort((a, b) => b.likes - a.likes)
-          .map(blog =>
-            <Blog
-              key={ blog.id }
-              user={ user }
-              blog={ blog } />
-          )
-      }
-    </div>
   )
 
   const showUsers = () => (
@@ -140,9 +109,14 @@ const App = () => {
     </div>
   )
 
-  const match = useRouteMatch('/users/:id')
-  const matchedUser = match
-    ? users.find(u => u.id === match.params.id)
+  const userMatch = useRouteMatch('/users/:id')
+  const matchedUser = userMatch
+    ? users.find(u => u.id === userMatch.params.id)
+    : null
+
+  const blogMatch = useRouteMatch('/blogs/:id')
+  const matchedBlog = blogMatch
+    ? blogs.find(b => b.id === blogMatch.params.id)
     : null
 
   return (
@@ -157,8 +131,14 @@ const App = () => {
         <Route path='/users'>
           { user ? showUsers() : loginForm() }
         </Route>
+        <Route path='/blogs/:id'>
+          <Blog blog={ matchedBlog } user={ user } />
+        </Route>
+        <Route path='/blogs'>
+          <BlogList blogs={ blogs } /> 
+        </Route>
         <Route path='/'>
-          { user ? showBlogs() : loginForm() }
+          <Redirect to='/blogs' />
         </Route>
       </Switch>
     </div>
