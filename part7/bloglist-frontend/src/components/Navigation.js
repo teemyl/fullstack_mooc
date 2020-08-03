@@ -12,14 +12,6 @@ const Navigation = ({ user }) => {
     dispatch(logout())
   }
 
-  const navBarStyle = {
-    backgroundColor: 'rgb(0, 0, 0, 0.3)'
-  }
-
-  const navLinkStyle = {
-    padding: 5
-  }
-
   return (
     <Navbar collapseOnSelect bg='dark' expand='lg' variant='dark' className='justify-content-between'>
       <Navbar.Brand as={ Link } to='/'>Bloglist App</Navbar.Brand>
