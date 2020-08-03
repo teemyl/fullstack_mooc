@@ -23,6 +23,14 @@ const Blog = ({ blog, user }) => {
     }
   }
 
+  const showComments = () => (
+    <ul>
+      {
+        blog.comments.map((comment, i) => <li key={ i }>{ comment }</li> )
+      }
+    </ul>
+  )
+
   return (
     <div>
       <h1>{ blog.title }</h1>
@@ -33,6 +41,8 @@ const Blog = ({ blog, user }) => {
         user.username === blog.user.username &&
         <button onClick={ handleRemove }>remove</button>
       }
+      <h2>comments</h2>
+      { blog.comments.length > 0 ? showComments() : "No comments yet"}
     </div>
   )
 }
