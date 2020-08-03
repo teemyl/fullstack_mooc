@@ -71,9 +71,8 @@ blogsRouter.put('/:id', async (request, response) => {
 })
 
 blogsRouter.post('/:id/comments', async (request, response) => {
-  const body = request.body
   const blogToUpdate = await Blog.findById(request.params.id)
-  console.log("asdasdasd")
+  
   const decodedToken = decodeToken(request)
 
   if (!decodedToken.id) {
@@ -86,8 +85,6 @@ blogsRouter.post('/:id/comments', async (request, response) => {
     response.status(403).end()
 
   if (blogToUpdate) {
-    console.log(blogToUpdate.comments)
-    console.log(request.body)
     const updatedBlog = await Blog.findByIdAndUpdate(
       blogToUpdate.id,
       { comments: [ ...blogToUpdate.comments, request.body.comment ] },

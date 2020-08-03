@@ -82,4 +82,20 @@ export const removeBlog = (blog) => {
   }
 }
 
+export const createComment = (blog, comment) => {
+  return async dispatch => {
+    try {
+      const commentedBlog = await blogService.createComment(blog, comment)
+      dispatch({
+        type: 'UPDATE_BLOG',
+        data: commentedBlog
+      })
+      dispatch(setMessage(`Comment added to blog '${ blog.title }'`, 'success'))
+    }
+    catch (exception) {
+      dispatch(setMessage(`Couldn't add comment: ${ exception.message }`, 'error'))
+    }
+  }
+}
+
 export default reducer

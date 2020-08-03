@@ -2,6 +2,8 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { updateBlog, removeBlog } from '../reducers/blogReducer'
 import { Redirect } from 'react-router-dom'
+import CommentForm from './CommentForm'
+import { createComment } from '../reducers/blogReducer'
 
 const Blog = ({ blog, user }) => {
 
@@ -23,6 +25,10 @@ const Blog = ({ blog, user }) => {
     }
   }
 
+  const addComment = async (commentObject) => {
+    dispatch(createComment(blog, commentObject))
+  }
+
   const showComments = () => (
     <ul>
       {
@@ -42,6 +48,7 @@ const Blog = ({ blog, user }) => {
         <button onClick={ handleRemove }>remove</button>
       }
       <h2>comments</h2>
+      <CommentForm createComment={ addComment } />
       { blog.comments.length > 0 ? showComments() : "No comments yet"}
     </div>
   )
