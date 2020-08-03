@@ -1,9 +1,10 @@
 import React, { useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
+
 import BlogForm from './BlogForm'
 import Toggleable from './Toggleable'
-import BlogListItem from './BlogListItem'
 import { createBlog } from '../reducers/blogReducer'
 
 const BlogList = ({ blogs }) => {
@@ -21,22 +22,42 @@ const BlogList = ({ blogs }) => {
   
   return (
     <div>
+      <h2 className='display-3'>Blogs</h2>
       <Toggleable
         buttonClassName='blogForm'
-        buttonLabel='add blog'
+        buttonLabel='Add blog'
         ref={ blogFormRef }>
         <BlogForm createBlog={ addBlog } />
       </Toggleable>
       <br />
-      {
-        blogs
-          .sort((a, b) => b.likes - a.likes)
-          .map(blog =>
-            <BlogListItem
-              key={ blog.id }
-              blog={ blog } />
-          )
-      }
+      <Table striped bordered size='sm'>
+        <thead className='thead-dark'>
+          <tr>
+            <th>
+              Blog title
+            </th>
+            <th>
+              Author
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            blogs
+              .sort((a, b) => b.likes - a.likes)
+              .map(blog => (
+                <tr key={ blog.id }>
+                  <td>
+                    <Link to={`/blogs/${ blog.id }`}>{ blog.title }</Link>
+                  </td>
+                  <td>
+                    { blog.author }
+                  </td>
+                </tr>
+              ))
+          }
+        </tbody>
+      </Table>
     </div>
   )
 }

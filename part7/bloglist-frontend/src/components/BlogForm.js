@@ -22,31 +22,40 @@ const BlogForm = ({ createBlog }) => {
   return (
     <div className='blogFormDiv'>
       <form onSubmit={ addBlog }>
-        title:
-        <input
-          id='titleInput'
-          type='text'
-          value={ blogTitle }
-          name='title'
-          onChange={ ({ target }) => setBlogTitle(target.value) }
-        /><br />
-        author:
-        <input
-          id='authorInput'
-          type='text'
-          value={ blogAuthor }
-          name='author'
-          onChange={ ({ target }) => setBlogAuthor(target.value) }
-        /><br />
-        url:
-        <input
+        <div className='form-group'>
+          <label for='titleInput'>Title</label>
+          <input
+            id='titleInput'
+            type='text'
+            value={ blogTitle }
+            name='title'
+            onChange={ ({ target }) => setBlogTitle(target.value) }
+            className='form-control'
+          />
+        </div>
+        <div className='form-group'>
+          <label for='authorInput'>Author</label>
+          <input
+            id='authorInput'
+            type='text'
+            value={ blogAuthor }
+            name='author'
+            onChange={ ({ target }) => setBlogAuthor(target.value) }
+            className='form-control'
+          />
+        </div>
+        <div className='form-group'>
+          <label for='urlInput'>Url</label>
+          <input
           id='urlInput'
           type='text'
           value={ blogUrl }
           name='url'
           onChange={ ({ target }) => setBlogUrl(target.value) }
-        /><br />
-        <button id='createBlog' type='submit'>create</button>
+          className='form-control'
+          />
+        </div>
+        <button id='createBlog' type='submit' className='btn btn-primary'>Create</button>
       </form>
     </div>
   )

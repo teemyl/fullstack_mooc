@@ -40,9 +40,10 @@ const Blog = ({ blog, user }) => {
   return (
     <div>
       <h1>{ blog.title }</h1>
-      <a href={ blog.url }>{ blog.url }</a><br />
+      By: { blog.author }<br />
+      URL: <a href={ blog.url }>{ blog.url }</a><br />
       { blog.likes } likes <button onClick={ handleLike }>like</button><br />
-      added by { blog.author }<br />
+      added by { blog.user.username }<br />
       {
         user.username === blog.user.username &&
         <button onClick={ handleRemove }>remove</button>
