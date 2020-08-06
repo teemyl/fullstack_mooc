@@ -149,7 +149,7 @@ const resolvers = {
         const author = { name: args.author, id: uuid() }
         authors = authors.concat(author)
       }
-
+      console.log(args.published)
       const book = { ...args, id: uuid() }
       books = books.concat(book)
 
