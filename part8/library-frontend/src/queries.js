@@ -37,3 +37,17 @@ query {
 }
 `
 
+export const AUTHOR_SETBORN = gql`
+mutation editAuthor($name: String!, $setBornTo: Int!) {
+  editAuthor(
+    name: $name,
+    setBornTo: $setBornTo
+  ) {
+    name
+    id
+    bookCount
+    born
+  }
+}
+`
+
