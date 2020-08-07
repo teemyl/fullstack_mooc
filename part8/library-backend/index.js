@@ -1,5 +1,25 @@
 const { ApolloServer, gql } = require('apollo-server')
+const mongoose = require('mongoose')
 const { v1: uuid } = require('uuid')
+
+const config = require('./config')
+const Book = require('./models/book')
+const Author = require('./models/author')
+
+mongoose.set('useFindAndModify', false)
+
+const MONGODB_URI = config.MONGODB_URI
+
+console.log(`Connecting to`, config.MONGODB_URI)
+
+mongoose.connect(
+  config.MONGODB_URI,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => console.log('connected to MongoDB'))
+  .catch((error) => console.log('error connecting to MongoDB:', error.message))
 
 let authors = [
   {
@@ -88,15 +108,15 @@ const typeDefs = gql`
   type Book {
     title: String!
     published: Int!
-    author: String!
-    id: String!
+    author: Author!
+    id: ID!
     genres: [String!]!
   }
 
   type Author {
     name: String!
     id: String!
-    bookCount: Int!
+    bookCount: Int
     born: Int
   }
 
@@ -126,17 +146,18 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
+    bookCount: () => Book.collection.countDocuments(),
+    authorCount: () => Author.collection.countDocuments(),
     allBooks: (root, args) => {
-      let filtered = [...books]
+      return Book.find({}).populate('author', { id: 1, name: 1, born: 1 })
+      /* let filtered = [...books]
       if (args.author)
         filtered = filtered.filter(b => b.author === args.author)
       if (args.genre)
         filtered = filtered.filter(b => b.genres.includes(args.genre))
-      return filtered
+      return filtered */
     },
-    allAuthors: () => authors
+    allAuthors: () => Author.find({})
   },
   Author: {
     bookCount: (root) => {
@@ -145,15 +166,8 @@ const resolvers = {
   },
   Mutation: {
     addBook: (root, args) => {
-      if (!authors.find(a => a.name === args.author)) {
-        const author = { name: args.author, id: uuid() }
-        authors = authors.concat(author)
-      }
-      
-      const book = { ...args, id: uuid() }
-      books = books.concat(book)
-
-      return book
+      const book = new Book({ ...args })
+      return book.save()
     },
     editAuthor: (root, args) => {
       let author = authors.find(a => a.name === args.name)
