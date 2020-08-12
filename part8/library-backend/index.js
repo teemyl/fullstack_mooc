@@ -113,9 +113,22 @@ const resolvers = {
       if (!context.currentUser) {
         throw new UserInputError("Access denied")
       }
-
-      const book = new Book({ ...args })
       
+      let author = await Author.findOne({ name: args.author })
+
+      if (!author) {
+        author = new Author({ name: args.author })
+
+        try {
+          await author.save()
+        }
+        catch (error) {
+          throw new UserInputError(error.message, { invalidArgs: args })
+        }
+      }
+
+      const book = new Book({ ...args, author: author._id })
+
       try {
         await book.save()
       }
