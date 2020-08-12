@@ -123,7 +123,7 @@ const resolvers = {
           await author.save()
         }
         catch (error) {
-          throw new UserInputError(error.message, { invalidArgs: args })
+          throw new UserInputError(`AUTHOR ERROR ${ error.message }`, { invalidArgs: args })
         }
       }
 
@@ -133,9 +133,10 @@ const resolvers = {
         await book.save()
       }
       catch (error) {
-        throw new UserInputError(error.message, { invalidArgs: args })
+        throw new UserInputError(`BOOK ERROR ${ error.message }`, { invalidArgs: args })
       }
-
+      book.author = author
+      
       return book
     },
     editAuthor: async (root, args, context) => {
@@ -195,6 +196,9 @@ const server = new ApolloServer({
       const currentUser = await User.findById(decodedToken.id)
       return { currentUser }
     }
+  },
+  engine: {
+    debugPrintReports: true,
   }
 })
 
