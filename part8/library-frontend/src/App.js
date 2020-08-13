@@ -4,7 +4,7 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
-import { useApolloClient, useSubscription } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import Recommend from './components/Recommend'
 import { BOOK_ADDED, ALL_BOOKS } from './queries'
 
@@ -26,14 +26,6 @@ const App = () => {
       })
     }
   }
-
-  useSubscription(BOOK_ADDED, {
-    onSubscriptionData: ({ subscriptionData }) => {
-      const addedBook = subscriptionData.data.bookAdded
-      updateCacheWith(addedBook)
-      window.alert(`New book '${ addedBook.title }' added`)
-    }
-  })
 
   if (token && page === 'login') setPage('authors')
 
@@ -75,7 +67,7 @@ const App = () => {
       </div>
 
       <Authors show={ page === 'authors' } loggedIn={ token ? true : false } />
-      <Books show={ page === 'books' } />
+      <Books show={ page === 'books' } updateCacheWith={ updateCacheWith } />
 
       {
         token

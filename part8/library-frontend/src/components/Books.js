@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { useLazyQuery } from '@apollo/client'
-import { ALL_BOOKS } from '../queries'
+import { useLazyQuery, useSubscription } from '@apollo/client'
+import { ALL_BOOKS, BOOK_ADDED } from '../queries'
 import BookTable from './BookTable'
 
 const Books = (props) => {
@@ -23,6 +23,15 @@ const Books = (props) => {
       setBooks(data.allBooks)
     }
   }, [data]) // eslint-disable-line
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded
+      props.updateCacheWith(addedBook)
+      setBooks(books.concat(addedBook))
+      window.alert(`New book '${ addedBook.title }' added`)
+    }
+  })
 
   const handleClick = async (newGenre) => {
     await refetch()
