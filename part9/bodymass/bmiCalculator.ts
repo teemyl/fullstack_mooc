@@ -11,11 +11,11 @@ const parseArguments = (args: Array<string>) : BmiValues => {
     return {
       height: Number(args[2]),
       weight: Number(args[3])
-    }
+    };
   } else {
     throw new Error('Provided values were not numbers!');
   }
-}
+};
 
 const calculateBmi = (height: number, weight: number) : string => {
   const bmi: number = weight / Math.pow(height * 0.01, 2);
@@ -28,13 +28,13 @@ const calculateBmi = (height: number, weight: number) : string => {
   else if (bmi < 40) return 'Obese Class II (Severely obese)';
   else if (bmi >= 40) return 'Obese Class III (Very severely obese)';
   else throw new Error('Couldn\'t calculate bmi');
-}
+};
 
 try {
   const { height, weight } = parseArguments(process.argv);
   console.log(calculateBmi(height, weight));
 } catch (e) {
-  console.log('Something went wrong, message:', e.message);
+  console.log('Something went wrong, message:', (e as Error).message);
 }
 
-export { calculateBmi as bmiCalculator }
+export { calculateBmi as bmiCalculator };

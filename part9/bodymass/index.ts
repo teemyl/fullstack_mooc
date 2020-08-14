@@ -9,14 +9,14 @@ app.get('/hello', (_req, res) => {
 
 app.get('/bmi', (req, res) => {
   try {
-    const weight: number = Number(req.query.weight);
-    const height: number = Number(req.query.height);
+    const weight = Number(req.query.weight);
+    const height = Number(req.query.height);
     const bmi: string = bmiCalculator(height, weight);
     res.send({ weight, height, bmi });
   } catch (e) {
     res.send({ error: 'malformatted parameters' });
   }
-})
+});
 
 const PORT = 3003;
 

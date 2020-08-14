@@ -31,13 +31,13 @@ const parseExerciseArguments = (args: Array<string>) : ExerciseData => {
   }
   
   if (args.slice(3, args.length).every(e => !isNaN(Number(e)))) {
-    dailyHours = args.slice(3, args.length).map(e => Number(e))
+    dailyHours = args.slice(3, args.length).map(e => Number(e));
   } else {
     throw new Error('Provided daily hours were not numbers!');
   }
   
-  return { dailyHours, target }
-}
+  return { dailyHours, target };
+};
 
 const getRating = (average: number, target: number) : Rating => {
   let value: number;
@@ -57,7 +57,7 @@ const getRating = (average: number, target: number) : Rating => {
   }
 
   return { value, description };
-}
+};
 
 const calculateExercises = (dailyHours: Array<number>, target: number) : Result => {
   const period: number = dailyHours.length;
@@ -74,11 +74,11 @@ const calculateExercises = (dailyHours: Array<number>, target: number) : Result 
     target: target,
     average: average
   };
-}
+};
 
 try {
   const { dailyHours, target } = parseExerciseArguments(process.argv);
   console.log(calculateExercises(dailyHours, target));
 } catch (e) {
-  console.log('Something went wrong, message:', e.message);
+  console.log('Something went wrong, message:', (e as Error).message);
 }
