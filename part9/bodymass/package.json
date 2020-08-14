@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "ts-node index.ts",
+    "dev": "ts-node-dev index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "ts-node": "ts-node",
     "bmiCalculator": "ts-node bmiCalculator.ts",
@@ -12,8 +14,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^4.17.7",
     "@types/node": "^14.0.27",
     "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.57",
     "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
   }
 }
