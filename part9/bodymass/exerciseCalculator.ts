@@ -13,6 +13,32 @@ interface Rating {
   description: string;
 }
 
+interface ExerciseData {
+  dailyHours: Array<number>;
+  target: number;
+}
+
+const parseExerciseArguments = (args: Array<string>) : ExerciseData => {
+  if (args.length < 4) throw new Error('Not enough arguments');
+  
+  let target: number;
+  let dailyHours: Array<number>;
+
+  if (!isNaN(Number(args[2]))) {
+    target = Number(args[2]);
+  } else {
+    throw new Error('Provided target value is not a number!');
+  }
+  
+  if (args.slice(3, args.length).every(e => !isNaN(Number(e)))) {
+    dailyHours = args.slice(3, args.length).map(e => Number(e))
+  } else {
+    throw new Error('Provided daily hours were not numbers!');
+  }
+  
+  return { dailyHours, target }
+}
+
 const getRating = (average: number, target: number) : Rating => {
   let value: number;
   let description: string;
@@ -50,4 +76,9 @@ const calculateExercises = (dailyHours: Array<number>, target: number) : Result 
   };
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const { dailyHours, target } = parseExerciseArguments(process.argv);
+  console.log(calculateExercises(dailyHours, target));
+} catch (e) {
+  console.log('Something went wrong, message:', e.message);
+}
