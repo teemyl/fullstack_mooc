@@ -10,7 +10,7 @@ const getPatients = (): Array<NonSensitivePatientData> => {
     gender,
     occupation
   }));
-}
+};
 
 const addPatient = ( patient: NewPatient ): Patient => {
   const newPatient = {
@@ -20,9 +20,9 @@ const addPatient = ( patient: NewPatient ): Patient => {
 
   patients.push(newPatient);
   return newPatient;
-}
+};
 
 export default {
   getPatients,
   addPatient
-}
+};

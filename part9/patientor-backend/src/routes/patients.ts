@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', (_req, res) => {
   res.send(patientService.getPatients());
-})
+});
 
 router.post('/', (req, res) => {
   try {
@@ -14,8 +14,8 @@ router.post('/', (req, res) => {
     const addedPatient = patientService.addPatient(newPatient);
     res.json(addedPatient);
   } catch (e) {
-    res.status(400).send(e.message)
+    res.status(400).send((e as Error).message);
   }
-})
+});
 
 export default router;
