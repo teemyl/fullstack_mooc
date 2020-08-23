@@ -3,10 +3,11 @@ import { Grid, Button } from "semantic-ui-react";
 import { Field, Formik, Form } from "formik";
 
 import { TextField, NumberField, DiagnosisSelection } from "../AddPatientModal/FormField";
-import { Entry } from "../types";
+import { HealthCheckEntry } from "../types";
 import { useStateValue } from "../state";
+import { isString, isDate, isNumber } from '../utils';
 
-export type EntryFormValues = Omit<Entry, 'id'>;
+export type EntryFormValues = Omit<HealthCheckEntry, 'id'>;
 
 interface Props {
   onSubmit: (values: EntryFormValues) => void;
@@ -24,22 +25,39 @@ export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
         date: "",
         specialist: "",
         diagnosisCodes: [],
+        healthCheckRating: 0
       }}
       onSubmit={onSubmit}
       validate={values => {
         const requiredError = "Field is required";
+        const invalidError = "Invalid input";
         const errors: { [field: string]: string } = {};
         if (!values.description) {
-          errors.name = requiredError;
+          errors.description = requiredError;
         }
         if (!values.date) {
-          errors.ssn = requiredError;
+          errors.date = requiredError;
         }
         if (!values.specialist) {
-          errors.dateOfBirth = requiredError;
+          errors.specialist = requiredError;
         }
         if (!values.type) {
-          errors.occupation = requiredError;
+          errors.type = requiredError;
+        }
+        if (!values.healthCheckRating) {
+          errors.healthCheckRating = requiredError;
+        }
+        if (!isString(values.description)) {
+          errors.description = invalidError;
+        }
+        if (!isString(values.specialist)) {
+          errors.specialist = invalidError;
+        }
+        if (!isDate(values.date)) {
+          errors.date = invalidError;
+        }
+        if (!isNumber(values.healthCheckRating)) {
+          errors.healthCheckRating = invalidError;
         }
         return errors;
       }}
