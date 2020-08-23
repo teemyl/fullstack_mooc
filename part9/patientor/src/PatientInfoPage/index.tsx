@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
-import { Header, Icon, List } from "semantic-ui-react";
+import { Header, Icon } from "semantic-ui-react";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import { useStateValue, updateCurrentPatient } from "../state";
-import { Patient, Entry, Diagnosis } from '../types';
+import { Patient, Entry } from '../types';
 import { apiBaseUrl } from "../constants";
+import EntryDetails from "../components/EntryDetails";
 
 enum GenderIcon {
   male = 'mars',
@@ -13,7 +14,7 @@ enum GenderIcon {
 }
 
 const PatientInfoPage: React.FC = () => {
-  const [{ patient, diagnoses }, dispatch] = useStateValue();
+  const [{ patient }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
   
   useEffect(() => {
@@ -28,13 +29,6 @@ const PatientInfoPage: React.FC = () => {
   }, [id, dispatch, patient]);
 
   if (!patient) return <div>404</div>;
-
-  const renderDiagnosis = (code: string) => {
-    const diagnosis: Diagnosis | undefined = diagnoses.find(d => d.code === code);
-    if (!diagnosis)
-      return code
-    return <>{code} {diagnosis.name}</>
-  }
 
   const hasEntries = patient.entries && patient.entries.length > 0;
   
@@ -51,18 +45,7 @@ const PatientInfoPage: React.FC = () => {
       {
         hasEntries &&
         patient.entries.map((entry: Entry) => (
-          <div key={entry.id}>
-            {entry.date} <i>{entry.description}</i>
-            <List bulleted>
-              {
-                entry.diagnosisCodes &&
-                entry.diagnosisCodes.length > 0 &&
-                entry.diagnosisCodes.map(code => (
-                  <List.Item key={code}>{renderDiagnosis(code)}</List.Item>
-                ))
-              }
-            </List>
-          </div>
+          <EntryDetails key={entry.id} entry={entry} />
         ))
       }
     </div>

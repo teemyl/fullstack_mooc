@@ -15,7 +15,6 @@ router.get('/:id', (req, res) => {
     res.status(404).send('Not found')
   }
   else {
-    console.log(patient);
     res.json(patient);
   }
 })
