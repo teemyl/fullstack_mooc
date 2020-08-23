@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
-import { Header, Icon } from "semantic-ui-react";
+import { Header, Icon, List } from "semantic-ui-react";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import { useStateValue, updateCurrentPatient } from "../state";
-import { Patient } from '../types';
+import { Patient, Entry } from '../types';
 import { apiBaseUrl } from "../constants";
 
 enum GenderIcon {
@@ -29,6 +29,8 @@ const PatientInfoPage: React.FC = () => {
 
   if (!patient) return <div>404</div>;
 
+  const hasEntries = patient.entries && patient.entries.length > 0;
+
   return (
     <div>
       <Header as="h2">
@@ -37,6 +39,25 @@ const PatientInfoPage: React.FC = () => {
       </Header>
       <div>ssn: {patient.ssn}</div>
       <div>occupation: {patient.occupation}</div>
+      
+      <Header as="h3">{hasEntries ? "Entries" : "No entries"}</Header>
+      {
+        hasEntries &&
+        patient.entries.map((entry: Entry) => (
+          <div>
+            {entry.date} <i>{entry.description}</i>
+            <List bulleted>
+              {
+                entry.diagnosisCodes &&
+                entry.diagnosisCodes.length > 0 &&
+                entry.diagnosisCodes.map(code => (
+                  <List.Item>{code}</List.Item>
+                ))
+              }
+            </List>
+          </div>
+        ))
+      }
     </div>
   );
 };
