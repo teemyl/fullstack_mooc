@@ -1,7 +1,7 @@
 import express from 'express';
 import patientService from '../services/patientService';
 import { toNewPatient } from '../utils';
-import { PublicPatient } from '../types';
+import { PublicPatient, Patient } from '../types';
 
 const router = express.Router();
 
@@ -16,6 +16,15 @@ router.get('/:id', (req, res) => {
   }
   else {
     res.json(patient);
+  }
+})
+
+router.post('/:id/entries', (req, res) => {
+  try {
+    const patient: Patient | undefined = patientService.addEntry(req.params.id, req.body);
+    res.json(patient);
+  } catch (e) {
+    res.status(400).send((e as Error).message);
   }
 })
 
