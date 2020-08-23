@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import { useStateValue, updateCurrentPatient } from "../state";
-import { Patient, Entry } from '../types';
+import { Patient, Entry, Diagnosis } from '../types';
 import { apiBaseUrl } from "../constants";
 
 enum GenderIcon {
@@ -13,7 +13,7 @@ enum GenderIcon {
 }
 
 const PatientInfoPage: React.FC = () => {
-  const [{ patient }, dispatch] = useStateValue();
+  const [{ patient, diagnoses }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
   
   useEffect(() => {
@@ -29,8 +29,15 @@ const PatientInfoPage: React.FC = () => {
 
   if (!patient) return <div>404</div>;
 
-  const hasEntries = patient.entries && patient.entries.length > 0;
+  const renderDiagnosis = (code: string) => {
+    const diagnosis: Diagnosis | undefined = diagnoses.find(d => d.code === code);
+    if (!diagnosis)
+      return code
+    return <>{code} {diagnosis.name}</>
+  }
 
+  const hasEntries = patient.entries && patient.entries.length > 0;
+  
   return (
     <div>
       <Header as="h2">
@@ -44,14 +51,14 @@ const PatientInfoPage: React.FC = () => {
       {
         hasEntries &&
         patient.entries.map((entry: Entry) => (
-          <div>
+          <div key={entry.id}>
             {entry.date} <i>{entry.description}</i>
             <List bulleted>
               {
                 entry.diagnosisCodes &&
                 entry.diagnosisCodes.length > 0 &&
                 entry.diagnosisCodes.map(code => (
-                  <List.Item>{code}</List.Item>
+                  <List.Item key={code}>{renderDiagnosis(code)}</List.Item>
                 ))
               }
             </List>
