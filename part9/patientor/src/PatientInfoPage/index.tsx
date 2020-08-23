@@ -3,7 +3,7 @@ import { Header, Icon } from "semantic-ui-react";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
-import { useStateValue } from "../state";
+import { useStateValue, updateCurrentPatient } from "../state";
 import { Patient } from '../types';
 import { apiBaseUrl } from "../constants";
 
@@ -19,7 +19,7 @@ const PatientInfoPage: React.FC = () => {
   useEffect(() => {
     const fetchPatient = async () => {
       const { data: fetchedPatient } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
-      dispatch({ type: "UPDATE_CURRENT_PATIENT", payload: fetchedPatient });
+      dispatch(updateCurrentPatient(fetchedPatient));
     }
 
     if (!patient || patient.id !== id) {
