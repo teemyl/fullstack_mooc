@@ -27,7 +27,7 @@ const PatientInfoPage: React.FC = () => {
     }
   }, [id, dispatch, patient]);
 
-  if (!patient) return <div>asd</div>;
+  if (!patient) return <div>404</div>;
 
   return (
     <div>
