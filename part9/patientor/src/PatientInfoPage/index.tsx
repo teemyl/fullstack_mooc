@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react'
-import { Header, Icon } from "semantic-ui-react";
+import React from 'react'
+import { Header, Icon, Button } from "semantic-ui-react";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
-import { useStateValue, updateCurrentPatient } from "../state";
+import { useStateValue, updateCurrentPatient, updatePatient } from "../state";
 import { Patient, Entry } from '../types';
 import { apiBaseUrl } from "../constants";
 import EntryDetails from "../components/EntryDetails";
+import AddEntryModal from '../AddEntryModal';
+import { EntryFormValues } from '../AddEntryModal/AddEntryForm';
 
 enum GenderIcon {
   male = 'mars',
@@ -16,8 +18,10 @@ enum GenderIcon {
 const PatientInfoPage: React.FC = () => {
   const [{ patient }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
-  
-  useEffect(() => {
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string | undefined>();
+
+  React.useEffect(() => {
     const fetchPatient = async () => {
       const { data: fetchedPatient } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
       dispatch(updateCurrentPatient(fetchedPatient));
@@ -28,7 +32,29 @@ const PatientInfoPage: React.FC = () => {
     }
   }, [id, dispatch, patient]);
 
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
+  
   if (!patient) return <div>404</div>;
+
+  const submitNewEntry = async (values: EntryFormValues) => {
+    try {
+      const { data: updatedPatient } = await axios.post<Patient>(
+        `${apiBaseUrl}/patients/${patient.id}/entries`,
+        values
+      );
+      dispatch(updatePatient(updatedPatient));
+      dispatch(updateCurrentPatient(updatedPatient));
+      closeModal();
+    } catch (e) {
+      console.error(e.response.data);
+      setError(e.response.data.error);
+    }
+  };
 
   const hasEntries = patient.entries && patient.entries.length > 0;
   
@@ -48,6 +74,13 @@ const PatientInfoPage: React.FC = () => {
           <EntryDetails key={entry.id} entry={entry} />
         ))
       }
+      <AddEntryModal
+        modalOpen={modalOpen}
+        onSubmit={submitNewEntry}
+        error={error}
+        onClose={closeModal}
+      />
+      <Button primary onClick={() => openModal()}>Add New Entry</Button>
     </div>
   );
 };

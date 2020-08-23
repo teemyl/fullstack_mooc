@@ -9,6 +9,12 @@ export enum Gender {
   Female = "female"
 }
 
+export enum EntryType {
+  HealthCheck = 'healthCheck',
+  Hospital = 'hospital',
+  OccupationalHealthcare = 'occupationalHealthcare'
+}
+
 export enum HealthCheckRating {
   "Healthy" = 0,
   "LowRisk" = 1,

@@ -82,3 +82,10 @@ export const setDiagnosesList = (diagnosesList: Diagnosis[]): Action => {
     payload: diagnosesList
   }
 }
+
+export const updatePatient = (patient: Patient): Action => {
+  return {
+    type: "ADD_PATIENT",
+    payload: patient
+  }
+}
